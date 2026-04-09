@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wingman — Your Gay Dating Coach</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0a0a14;
+      --surface:    #111122;
+      --surface2:   #191930;
+      --surface3:   #1e1e3a;
+      --pink:       #ff6b9d;
+      --pink2:      #ff8fb3;
+      --purple:     #9b59b6;
+      --purple2:    #be7cdd;
+      --teal:       #00bfa5;
+      --teal2:      #26d9c5;
+      --text:       #e8e4f0;
+      --muted:      #7a7898;
+      --border:     rgba(155, 89, 182, 0.2);
+      --radius:     16px;
+      --radius-sm:  10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ───────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      background: rgba(10, 10, 20, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--pink), var(--purple2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+
+    .nav-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--text); }
+
+    .nav-cta {
+      padding: 8px 20px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-radius: 40px;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── Hero ──────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(155, 89, 182, 0.15);
+      border: 1px solid rgba(155, 89, 182, 0.3);
+      border-radius: 40px;
+      font-size: 0.78rem;
+      color: var(--purple2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--pink), var(--purple2), var(--teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary {
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-radius: 40px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.15s, opacity 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
+
+    .btn-ghost {
+      padding: 14px 28px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      color: var(--text);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+    .btn-ghost:hover { border-color: var(--purple2); background: rgba(155, 89, 182, 0.08); }
+
+    /* ── Feature Cards ─────────────────────────────────── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { border-color: var(--purple2); transform: translateY(-2px); }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 14px;
+    }
+
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .feature-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      background: rgba(0, 191, 165, 0.12);
+      border: 1px solid rgba(0, 191, 165, 0.25);
+      border-radius: 20px;
+      font-size: 0.7rem;
+      color: var(--teal2);
+      margin-top: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Chat Interface ────────────────────────────────── */
+    .chat-section {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .chat-section-label {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .chat-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 16px 24px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .chat-header-info h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .chat-status {
+      font-size: 0.75rem;
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chat-status::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+
+    .chat-privacy-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      padding: 6px 24px;
+      background: rgba(0, 191, 165, 0.05);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chat-messages {
+      height: 420px;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 88%;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-bubble {
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .message.user .message-bubble {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant .message-bubble {
+      background: var(--surface2);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message-bubble strong {
+      font-weight: 700;
+      color: var(--pink2);
+    }
+
+    .message.assistant .message-bubble strong {
+      color: var(--teal2);
+    }
+
+    .message-bubble ul, .message-bubble ol {
+      padding-left: 20px;
+      margin: 6px 0;
+    }
+
+    .message-bubble li { margin: 3px 0; }
+
+    .msg-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .user .msg-avatar {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+    }
+
+    .assistant .msg-avatar {
+      background: var(--surface3);
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 14px 18px;
+      background: var(--surface2);
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: typingBounce 1.2s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── Suggested prompts ─────────────────────────────── */
+    .suggestions {
+      padding: 0 20px 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .suggestion-chip {
+      padding: 6px 14px;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .suggestion-chip:hover { border-color: var(--pink2); color: var(--text); }
+
+    /* ── Chat Input ────────────────────────────────────── */
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      background: var(--surface2);
+    }
+
+    #chat-input {
+      flex: 1;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+      max-height: 120px;
+      min-height: 44px;
+    }
+    #chat-input:focus { border-color: var(--purple2); }
+    #chat-input::placeholder { color: var(--muted); }
+
+    #send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.15s, transform 0.15s;
+      align-self: flex-end;
+    }
+    #send-btn:hover { opacity: 0.85; transform: scale(1.05); }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    #send-btn svg { width: 18px; height: 18px; fill: white; }
+
+    /* ── Pricing ───────────────────────────────────────── */
+    .pricing-section {
+      max-width: 700px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 40px;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 560px) {
+      .pricing-cards { grid-template-columns: 1fr; }
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: left;
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--pink);
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.06), rgba(155, 89, 182, 0.06));
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -1px;
+      right: 20px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 0 0 8px 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .pricing-tier {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .pricing-amount {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+
+    .pricing-period {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .pricing-features li {
+      font-size: 0.875rem;
+      color: var(--muted);
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--teal);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pricing-btn {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .pricing-btn.primary {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+    }
+
+    .pricing-btn.ghost {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .pricing-btn:hover { opacity: 0.85; }
+
+    /* ── Privacy section ───────────────────────────────── */
+    .privacy-section {
+      max-width: 700px;
+      margin: 0 auto 80px;
+      padding: 32px;
+      background: var(--surface);
+      border: 1px solid rgba(0, 191, 165, 0.2);
+      border-radius: var(--radius);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .privacy-section h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--teal2);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .privacy-items {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 520px) {
+      .privacy-items { grid-template-columns: 1fr; }
+    }
+
+    .privacy-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .privacy-item .check {
+      color: var(--teal);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Footer ────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-logo">Wingman</a>
+    <div class="nav-links">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#privacy" class="nav-link">Privacy</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+      <a href="#chat" class="nav-cta">Try Free</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">🏳️‍🌈 Built for gay men, by someone who gets it</div>
+    <h1>Your <span class="gradient">gay best friend</span> who gives it to you straight</h1>
+    <p>Dating coach, profile optimizer, and safety companion in one. No judgment, no data stored, no BS. Real advice from someone who knows the apps.</p>
+    <div class="hero-actions">
+      <a href="#chat" class="btn-primary">Start chatting free</a>
+      <a href="#features" class="btn-ghost">See what Wingman does</a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Conversation Coach</h3>
+        <p>Openers that actually get responses. "What do I say next?" answered. Escalation help. Conversation recovery when things go sideways.</p>
+        <span class="feature-tag">Context-aware</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✏️</div>
+        <h3>Profile Optimizer</h3>
+        <p>Bio rewrites tailored to each platform — Grindr bio is not a Hinge prompt. Photo order advice. Platform-specific strategy.</p>
+        <span class="feature-tag">Platform-specific</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Safety Companion</h3>
+        <p>Red flag detection. Catfish risk scoring. Sextortion warning detection. Meetup safety checklists. Exit strategies for uncomfortable situations.</p>
+        <span class="feature-tag">Non-alarmist</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Vibe Check</h3>
+        <p>"He said X, what does that mean?" — actual answers. Is he interested or just bored? Ghosting probability. Compatibility read.</p>
+        <span class="feature-tag">No sugarcoating</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat -->
+  <section id="chat" class="chat-section">
+    <p class="chat-section-label">Live demo — try it now, no signup required</p>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-avatar">🤝</div>
+        <div class="chat-header-info">
+          <h4>Wingman</h4>
+          <span class="chat-status">Online</span>
+        </div>
+      </div>
+      <div class="chat-privacy-note">
+        🔒 Zero data stored. This conversation disappears when you close the tab.
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="message assistant">
+          <div class="msg-avatar">🤝</div>
+          <div class="message-bubble">
+            Hey! I'm Wingman — your gay dating coach and safety companion.<br><br>
+            I can help you with openers that actually work, profile rewrites, decoding what he <em>really</em> means, red flag checks, or just "what do I say next?"<br><br>
+            What's going on?
+          </div>
+        </div>
+      </div>
+
+      <div class="suggestions" id="suggestions">
+        <button class="suggestion-chip" onclick="useSuggestion(this)">Write me an opener</button>
+        <button class="suggestion-chip" onclick="useSuggestion(this)">Review my Grindr bio</button>
+        <button class="suggestion-chip" onclick="useSuggestion(this)">Is this a red flag?</button>
+        <button class="suggestion-chip" onclick="useSuggestion(this)">Is he interested or ghosting?</button>
+        <button class="suggestion-chip" onclick="useSuggestion(this)">Meetup safety checklist</button>
+      </div>
+
+      <div class="chat-input-area">
+        <textarea
+          id="chat-input"
+          placeholder="Ask me anything..."
+          rows="1"
+          onkeydown="handleKeydown(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button id="send-btn" onclick="sendMessage()" aria-label="Send">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="pricing-section">
+    <h2 class="section-title">Simple pricing</h2>
+    <p class="section-subtitle">Start free. Upgrade when you're ready.</p>
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <div class="pricing-tier">Free</div>
+        <div class="pricing-amount">$0</div>
+        <div class="pricing-period">forever</div>
+        <ul class="pricing-features">
+          <li>5 messages per day</li>
+          <li>All features included</li>
+          <li>No account required</li>
+          <li>Zero data stored</li>
+        </ul>
+        <a href="#chat" class="pricing-btn ghost">Start free</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="featured-badge">Most popular</div>
+        <div class="pricing-tier">Full access</div>
+        <div class="pricing-amount">$9.99</div>
+        <div class="pricing-period">per month</div>
+        <ul class="pricing-features">
+          <li>Unlimited messages</li>
+          <li>All features included</li>
+          <li>Priority responses</li>
+          <li>No account required</li>
+          <li>Zero data stored</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <a href="#" class="pricing-btn primary">Get full access</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section id="privacy" class="privacy-section" style="margin: 0 24px 80px; max-width: 760px;">
+    <h2>🔒 Privacy-first by design</h2>
+    <div class="privacy-items">
+      <div class="privacy-item">
+        <span class="check">✓</span>
+        <span>Zero conversation logs — nothing written to disk</span>
+      </div>
+      <div class="privacy-item">
+        <span class="check">✓</span>
+        <span>No user profiles created or stored</span>
+      </div>
+      <div class="privacy-item">
+        <span class="check">✓</span>
+        <span>No analytics that could identify you</span>
+      </div>
+      <div class="privacy-item">
+        <span class="check">✓</span>
+        <span>Ephemeral sessions — cleared when you leave</span>
+      </div>
+      <div class="privacy-item">
+        <span class="check">✓</span>
+        <span>No account required to use</span>
+      </div>
+      <div class="privacy-item">
+        <span class="check">✓</span>
+        <span>We will never out you</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Wingman — Built with care for the community 🏳️‍🌈</p>
+    <p style="margin-top: 8px;">
+      <a href="/privacy">Privacy Policy</a> ·
+      <a href="https://github.com/starwitnessdigital/wingman-agent">GitHub</a>
+    </p>
+  </footer>
+
+  <script>
+    const API_BASE = '';
+    let sessionId = null;
+    let isLoading = false;
+
+    const messagesEl = document.getElementById('chat-messages');
+    const inputEl = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const suggestionsEl = document.getElementById('suggestions');
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+
+    function handleKeydown(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function useSuggestion(btn) {
+      inputEl.value = btn.textContent;
+      autoResize(inputEl);
+      inputEl.focus();
+      suggestionsEl.style.display = 'none';
+    }
+
+    function scrollToBottom() {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function addMessage(role, text) {
+      const msg = document.createElement('div');
+      msg.className = `message ${role}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'msg-avatar';
+      avatar.textContent = role === 'user' ? '👤' : '🤝';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.innerHTML = formatMessage(text);
+
+      msg.appendChild(avatar);
+      msg.appendChild(bubble);
+      messagesEl.appendChild(msg);
+      scrollToBottom();
+      return msg;
+    }
+
+    function formatMessage(text) {
+      return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    }
+
+    function showTyping() {
+      const msg = document.createElement('div');
+      msg.className = 'message assistant';
+      msg.id = 'typing-msg';
+
+      const avatar = document.createElement('div');
+      avatar.className = 'msg-avatar';
+      avatar.textContent = '🤝';
+
+      const indicator = document.createElement('div');
+      indicator.className = 'typing-indicator';
+      indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+
+      msg.appendChild(avatar);
+      msg.appendChild(indicator);
+      messagesEl.appendChild(msg);
+      scrollToBottom();
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('typing-msg');
+      if (el) el.remove();
+    }
+
+    async function sendMessage() {
+      const text = inputEl.value.trim();
+      if (!text || isLoading) return;
+
+      isLoading = true;
+      sendBtn.disabled = true;
+      suggestionsEl.style.display = 'none';
+
+      addMessage('user', text);
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+
+      showTyping();
+
+      try {
+        const res = await fetch(`${API_BASE}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            session_id: sessionId,
+          }),
+        });
+
+        removeTyping();
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ detail: 'Unknown error' }));
+          addMessage('assistant', `Sorry, something went wrong: ${err.detail || 'Please try again.'}`);
+        } else {
+          const data = await res.json();
+          sessionId = data.session_id;
+          addMessage('assistant', data.response);
+        }
+      } catch (err) {
+        removeTyping();
+        addMessage('assistant', 'Connection issue — make sure the server is running and try again.');
+      }
+
+      isLoading = false;
+      sendBtn.disabled = false;
+      inputEl.focus();
+    }
+  </script>
+
+</body>
+</html>
